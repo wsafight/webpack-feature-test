@@ -31,3 +31,7 @@ node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --config=we
 ## 模块联邦
 
 Webpack 的微前端解决方案。
+
+## swc 加快打包速度
+
+## 多页面构建

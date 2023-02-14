@@ -17,6 +17,10 @@ class Jump {
   }
 }
 
+let a = new Jump()
+
+console.log(a)
+
 getData()
 
 show('Webpack')
