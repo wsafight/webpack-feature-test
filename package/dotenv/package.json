@@ -1,0 +1,12 @@
+{
+    "name": "webpack-modern",
+    "private":"false",
+    "scripts": {
+        "build": "node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --mode=production --config=webpack.config.js"
+    },
+    "devDependencies": {
+        "webpack": "5.75.0",
+        "webpack-cli": "5.0.1",
+        "dotenv-webpack": "8.0.1"
+    }
+}
