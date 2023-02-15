@@ -6,8 +6,7 @@
 
 ## Webpack 内存溢出
 
-node在运行时，内存是有限制的,一旦运行内存超过上述限制，就会出现堆栈溢出的报错。Webpack 在进行打包时候可能会出现 heap out of
-memory 错误，此时我们可以直接制定 max_old_space_size 扩展内存进行打包构建。
+node在运行时，内存是有限制的,一旦运行内存超过上述限制，就会出现堆栈溢出的报错。Webpack 在进行打包时候可能会出现 heap out of memory 错误，此时我们可以直接制定 max_old_space_size 扩展内存进行打包构建。
 
 ```bash
 node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --config=webpack.config.js"
@@ -31,9 +30,31 @@ node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --config=we
 <script nomodule src='main.js'></scirpt>
 ```
 
-## 模块联邦
-
-Webpack 的微前端解决方案。
+主要配置为
+```js
+{
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', {
+                "targets": {
+                  // 目标位 esmodules
+                  "esmodules": true
+                }
+              }]
+            ]
+          }
+        }
+      },
+    ]
+  },
+}
+```
 
 ## env 环境配置
 
@@ -95,3 +116,7 @@ module.exports = {
 ## swc 加快打包速度
 
 ## 多页面构建
+
+## 模块联邦
+
+Webpack 的微前端解决方案。
