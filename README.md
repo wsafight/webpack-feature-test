@@ -138,9 +138,50 @@ module: {
 }
 ```
 
+## 多入口构建
 
+针对一些大型项目来说，构建 MPA 项目也是必要的。多页面共用同一个壳和公共代码性能也是非常高的。我们可以这样构建。
 
-## 多页面构建
+```js
+// 后续新增模块只需要添加模块名称
+const buildPages = (names) => {
+  const ret = {}
+  names.forEach(name => {
+    ret[name] = `./src/pages/${name}/main.js`
+  })
+  return ret
+}
+
+module.exports = {
+  // 构建 多入口
+  entry: buildPages(['sale', 'purchase']),
+}
+```
+
+同时也需要对公共依赖进行提取，否则会加载和运行更多的代码。配置如下：
+
+```js
+optimization: {
+  splitChunks: {
+    chunks: 'all',
+    minSize: 200,
+    minRemainingSize: 0,
+    minChunks: 1,
+    maxAsyncRequests: 30,
+    maxInitialRequests: 30,
+    enforceSizeThreshold: 50000,
+    cacheGroups: {
+      vendor: {
+        test: /[\\/]node_modules[\\/]/,
+        name: 'vendor',
+        chunks: 'all',
+      },
+    },
+  }
+},
+```
+
+如此，我们就打出了 purchase-[hash].js sale-[hash].js 以及 vendor-[hash].js 三个文件。
 
 ## 模块联邦
 
