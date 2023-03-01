@@ -250,7 +250,7 @@ import { formatDate } from 'utils/date'
 ```
 
 
-在导入语句没带文件后缀时，Webpack 会自动带上后缀后去尝试访问文件是否存在。可以配置 extensions 来定制解析使用文件后缀的顺序，Webpack 默认为 ['.js', '.json'] ，即先查看是否有 js，有则直接使用，如果没有，再查看是否有 json。 可以如下指定
+在导入语句没带文件后缀时，Webpack 会自动带上后缀后去尝试访问文件是否存在。可以配置 extensions 来定制解析使用文件后缀的顺序，Webpack 默认为 ['.js', '.json'] ，即先查看是否有 js，有则直接使用，如果没有，再查看是否有 json。 可以如下指定。
 
 ```js
 module.exports = {
@@ -261,6 +261,17 @@ module.exports = {
 }
 ```
 
+extensions 越长，或者正确的后缀在越后面，就会造成尝试的次数越多，所以 resolve.extensions 的配置也会影响到构建的性能。在代码中应该准确的带上文件后缀。
+
+## 按需加载
+
+
 ## 模块联邦
 
 Webpack 的微前端解决方案。
+
+
+
+## 其他资源
+
+[webpack-examples](https://github.com/webpack/webpack/tree/main/examples)：来自 Webpack 官方的案例集合。
