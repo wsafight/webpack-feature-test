@@ -115,6 +115,31 @@ module.exports = {
 
 ## swc 加快打包速度
 
+可以利用 swc 加快打包速度，需要下载 swc-loader 和 @swc/core 两个库。
+
+主要配置为
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.(jsx|js|ts|tsx)?$/,
+      use: [
+        {
+          // 需要下载 thread-loader
+          loader: 'thread-loader',
+          options: { workerParallelJobs: 50 },
+        },
+        'swc-loader',
+      ],
+      exclude: /node_modules/,
+    },
+  ],
+}
+```
+
+
+
 ## 多页面构建
 
 ## 模块联邦
