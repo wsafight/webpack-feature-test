@@ -6,7 +6,8 @@
 
 ## Webpack 内存溢出
 
-node在运行时，内存是有限制的,一旦运行内存超过上述限制，就会出现堆栈溢出的报错。Webpack 在进行打包时候可能会出现 heap out of memory 错误，此时我们可以直接制定 max_old_space_size 扩展内存进行打包构建。
+node在运行时，内存是有限制的,一旦运行内存超过上述限制，就会出现堆栈溢出的报错。Webpack 在进行打包时候可能会出现 heap out of
+memory 错误，此时我们可以直接制定 max_old_space_size 扩展内存进行打包构建。
 
 ```bash
 node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --config=webpack.config.js"
@@ -31,8 +32,10 @@ node --max_old_space_size=8192 ./node_modules/webpack/bin/webpack.js --config=we
 ```
 
 主要配置为
+
 ```js
-{
+module.exports = {
+  //...
   module: {
     rules: [
       {
@@ -83,12 +86,13 @@ module.exports = {
 ```
 
 在代码中我们这样写
+
 ```ts
 console.log(process.env.DB_HOST);
 
 // 转化成
 
-console.log('127.0.0.1');
+console.log("127.0.0.1");
 ```
 
 还可以配置更多的版本。
@@ -120,22 +124,25 @@ module.exports = {
 主要配置为
 
 ```js
-module: {
-  rules: [
-    {
-      test: /\.(jsx|js|ts|tsx)?$/,
-      use: [
-        {
-          // 需要下载 thread-loader
-          loader: 'thread-loader',
-          options: { workerParallelJobs: 50 },
-        },
-        'swc-loader',
-      ],
-      exclude: /node_modules/,
-    },
-  ],
-}
+module.exports = {
+  //...
+  module: {
+    rules: [
+      {
+        test: /\.(jsx|js|ts|tsx)?$/,
+        use: [
+          {
+            // 需要下载 thread-loader
+            loader: "thread-loader",
+            options: { workerParallelJobs: 50 },
+          },
+          "swc-loader",
+        ],
+        exclude: /node_modules/,
+      },
+    ],
+  },
+};
 ```
 
 ## 多入口构建
@@ -145,43 +152,71 @@ module: {
 ```js
 // 后续新增模块只需要添加模块名称
 const buildPages = (names) => {
-  const ret = {}
-  names.forEach(name => {
-    ret[name] = `./src/pages/${name}/main.js`
-  })
-  return ret
-}
+  const ret = {};
+  names.forEach((name) => {
+    ret[name] = `./src/pages/${name}/main.js`;
+  });
+  return ret;
+};
 
 module.exports = {
   // 构建 多入口
-  entry: buildPages(['sale', 'purchase']),
-}
+  entry: buildPages(["sale", "purchase"]),
+};
 ```
 
 同时也需要对公共依赖进行提取，否则会加载和运行更多的代码。配置如下：
 
 ```js
-optimization: {
-  splitChunks: {
-    chunks: 'all',
-    minSize: 200,
-    minRemainingSize: 0,
-    minChunks: 1,
-    maxAsyncRequests: 30,
-    maxInitialRequests: 30,
-    enforceSizeThreshold: 50000,
-    cacheGroups: {
-      vendor: {
-        test: /[\\/]node_modules[\\/]/,
-        name: 'vendor',
-        chunks: 'all',
+module.exports = {
+  //...
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+      minSize: 200,
+      minRemainingSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 30,
+      maxInitialRequests: 30,
+      enforceSizeThreshold: 50000,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all",
+        },
       },
     },
-  }
-},
+  },
+};
 ```
 
 如此，我们就打出了 purchase-[hash].js sale-[hash].js 以及 vendor-[hash].js 三个文件。
+
+## externals 获取外部 CDN 资源
+
+前端项目基本上都会使用 Vue，React 以及相对应的组件库来搭建 SPA 单页面项目。但是在构建时候，把这些框架代码直接打包到项目中，并非是一个十分明智的选择。
+
+我们可以直接在项目的 index.html 中添加如下代码。
+
+```html
+<script src="//cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.runtime.global.prod.js"
+crossorigin="anonymous"></script>
+
+<script src="//cdn.jsdelivr.net/npm/vue-router@4.1.6/dist/vue-router.global.prod.js" crossorigin="anonymous"></script>
+```
+
+然后可以在 webpack.config.js 中这样配置,如此就可以使用 CDN 中的 js 了。
+
+```js
+module.exports = {
+  //...
+  externals: {
+    "vue": "Vue",
+    "vue-router": "VueRouter",
+  },
+};
+```
 
 ## 模块联邦
 
