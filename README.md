@@ -218,6 +218,49 @@ module.exports = {
 };
 ```
 
+## resolve 解析
+
+Webpack 在启动后会从配置的入口模块出发找出所有依赖的模块，Resolve 配置 Webpack 如何寻找模块所对应的文件。 Webpack 内置 JavaScript 模块化语法解析功能，默认会采用模块化标准里约定好的规则去寻找，但你也可以根据自己的需要修改默认的规则。
+
+没有配置 resolve 之前。想要引入 utils 文件夹中的文件，我们可能需要
+
+```js
+import { formatDate } from '../../utils/date'
+```
+
+配置 resolve 后
+
+```js
+module.exports = {
+  // ...
+  resolve: {
+    alias: {
+      utils: path.join(__dirname, 'src/utils'),
+      // 关键字结尾，这里可以测试一下能否利用 webpack 参数传递路径构建不同项目
+      'xxx$': '/path/to/xxx.js'
+    }
+  }
+}
+```
+
+改写代码
+
+```js
+import { formatDate } from 'utils/date'
+```
+
+
+在导入语句没带文件后缀时，Webpack 会自动带上后缀后去尝试访问文件是否存在。可以配置 extensions 来定制解析使用文件后缀的顺序，Webpack 默认为 ['.js', '.json'] ，即先查看是否有 js，有则直接使用，如果没有，再查看是否有 json。 可以如下指定
+
+```js
+module.exports = {
+  // ...
+  resolve: {
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
+  }
+}
+```
+
 ## 模块联邦
 
 Webpack 的微前端解决方案。
